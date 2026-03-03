@@ -1,0 +1,51 @@
+spring.application.name=entrepisej
+
+#H2 database for fasting init
+# Añadimos DB_CLOSE_ON_EXIT=FALSE para evitar que la BD se cierre antes de tiempo
+spring.datasource.url=jdbc:h2:mem:entrepise_db;DB_CLOSE_ON_EXIT=FALSE
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+# Es mejor dejar el password vacío si no se ha configurado en la consola
+spring.datasource.password=
+
+spring.jpa.open-in-view=false
+# Cambiamos las rutas por defecto para evitar conflictos
+springdoc.api-docs.path=/v3/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.operationsSorter=alphapha
+
+#Evitar el logs de security
+logging.level.org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer=ERROR
+
+# --- Habilitar la Consola Web ---
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+# Esto permite que la consola se vea dentro de frames (necesario en muchos navegadores)
+spring.h2.console.settings.web-allow-others=true
+logging.level.org.springdoc=DEBUG
+
+# --- Estrategia de Base de Datos ---
+# 'update' intenta actualizar, 'create-drop' es ideal para pruebas (limpia al cerrar)
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# Esto asegura que Hibernate cree las tablas ANTES de ejecutar tu data.sql
+spring.jpa.defer-datasource-initialization=true
+
+# Especificamos que queremos ejecutar scripts siempre (necesario en Spring Boot 3.x)
+spring.sql.init.mode=always
+
+# JWT Configuration (Mínimo 32 caracteres para HS256)
+jwt.secret.key=
+jwt.expiration=
+
+# Cloudinary Configuration
+cloudinary.cloud_name=
+cloudinary.api_key=
+cloudinary.api_secret=
+
+# Configuración para permitir subida de archivos grandes si es necesario
+spring.servlet.multipart.max-file-size=2MB
+spring.servlet.multipart.max-request-size=2MB
+
+application.security.cors.allowed-origins=${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
