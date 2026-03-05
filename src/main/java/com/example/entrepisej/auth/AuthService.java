@@ -2,14 +2,12 @@ package com.example.entrepisej.auth;
 
 import com.example.entrepisej.auth.request.LoginRequest;
 import com.example.entrepisej.auth.request.RegisterRequest;
-import com.example.entrepisej.dto.AuthResponse; // IMPORTANTE
+import com.example.entrepisej.dto.AuthResponse; 
 import com.example.entrepisej.domain.models.Employee;
 import com.example.entrepisej.domain.models.Role;
-import com.example.entrepisej.security.JwtService; // IMPORTANTE
+import com.example.entrepisej.security.JwtService;
 import com.example.entrepisej.repository.EmployeeRepository;
 import com.example.entrepisej.repository.RoleRepository;
-
-// Excepciones y Utilidades de Java/Spring
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,8 +17,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
-
-// Clases de Java estándar que te faltaban
 import java.util.Set;
 
 @Service

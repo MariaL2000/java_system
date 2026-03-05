@@ -4,10 +4,9 @@ package com.example.entrepisej.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import com.example.entrepisej.auth.AuthService; 
-import com.example.entrepisej.auth.request.LoginRequest; 
-import com.example.entrepisej.auth.request.RegisterRequest; 
+import com.example.entrepisej.auth.AuthService;
+import com.example.entrepisej.auth.request.LoginRequest;
+import com.example.entrepisej.auth.request.RegisterRequest;
 import com.example.entrepisej.dto.AuthResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;

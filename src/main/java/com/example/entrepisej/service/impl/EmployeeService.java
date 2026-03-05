@@ -12,7 +12,7 @@ import com.example.entrepisej.mapper.Mapper;
 import com.example.entrepisej.repository.EmployeeRepository;
 import com.example.entrepisej.repository.RoleRepository;
 import com.example.entrepisej.service.IEmployeeService;
-import com.example.entrepisej.service.ICloudinaryService; 
+import com.example.entrepisej.service.ICloudinaryService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -54,14 +54,14 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
-@Transactional(readOnly = true)
-public List<EmployeeDTO> findByName(String query) {
+    @Transactional(readOnly = true)
+    public List<EmployeeDTO> findByName(String query) {
 
-    return employeeRepository.searchByQuery(query)
-            .stream()
-            .map(Mapper::toDTO)
-            .collect(Collectors.toList());
-}
+        return employeeRepository.searchByQuery(query)
+                .stream()
+                .map(Mapper::toDTO)
+                .collect(Collectors.toList());
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -78,7 +78,7 @@ public List<EmployeeDTO> findByName(String query) {
         Employee emp = Mapper.toEntity(dto);
         // Asignamos los roles antes de guardar
         assignRoles(emp, dto.getRoles());
-        
+
         return Mapper.toDTO(employeeRepository.save(emp));
     }
 
@@ -89,12 +89,11 @@ public List<EmployeeDTO> findByName(String query) {
         if (image != null && !image.isEmpty()) {
             imageUrl = cloudinaryService.uploadImage(image);
         }
-        
+
         Employee emp = Mapper.toEntity(dto);
         emp.setImageUrl(imageUrl);
-        // Corregido: Ahora también asigna roles en la creación con imagen
         assignRoles(emp, dto.getRoles());
-                
+
         return Mapper.toDTO(employeeRepository.save(emp));
     }
 
@@ -108,7 +107,7 @@ public List<EmployeeDTO> findByName(String query) {
             employee.setImageUrl(cloudinaryService.uploadImage(image));
         }
 
-        updateEmployeeData(employee, dto); 
+        updateEmployeeData(employee, dto);
         return Mapper.toDTO(employeeRepository.save(employee));
     }
 
@@ -129,8 +128,7 @@ public List<EmployeeDTO> findByName(String query) {
 
         // Obtener el usuario actual
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        
-        // Verificamos si es Admin (buscamos el rol que definiste en tu SQL: 'admin')
+
         boolean isAdmin = auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_admin") || a.getAuthority().equals("ADMIN"));
 
@@ -152,7 +150,7 @@ public List<EmployeeDTO> findByName(String query) {
             Set<Role> rolesEntities = new HashSet<>();
             roleNames.forEach(name -> {
                 Role role = roleRepository.findByName(name)
-                    .orElseThrow(() -> new ResourceNotFoundException("Rol no encontrado: " + name));
+                        .orElseThrow(() -> new ResourceNotFoundException("Rol no encontrado: " + name));
                 rolesEntities.add(role);
             });
             emp.setRoles(rolesEntities);
@@ -165,27 +163,26 @@ public List<EmployeeDTO> findByName(String query) {
         employee.setLastName(temp.getLastName());
         employee.setEmail(dto.getEmail());
         employee.setCurrentSalary(dto.getCurrentSalary());
-        
+
         // También actualizamos los roles si vienen en el DTO
         if (dto.getRoles() != null) {
             assignRoles(employee, dto.getRoles());
         }
     }
 
-
     @Override
-@Transactional
-public void changePassword(Long id, ChangePasswordRequest request) {
-    Employee employee = employeeRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado"));
+    @Transactional
+    public void changePassword(Long id, ChangePasswordRequest request) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado"));
 
-    // 1. Verificar que la contraseña actual sea correcta
-    if (!passwordEncoder.matches(request.getCurrentPassword(), employee.getPassword())) {
-        throw new RuntimeException("La contraseña actual es incorrecta");
+        // 1. Verificar que la contraseña actual sea correcta
+        if (!passwordEncoder.matches(request.getCurrentPassword(), employee.getPassword())) {
+            throw new RuntimeException("La contraseña actual es incorrecta");
+        }
+
+        // 2. Encriptar y guardar la nueva contraseña
+        employee.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        employeeRepository.save(employee);
     }
-
-    // 2. Encriptar y guardar la nueva contraseña
-    employee.setPassword(passwordEncoder.encode(request.getNewPassword()));
-    employeeRepository.save(employee);
-}
 }
